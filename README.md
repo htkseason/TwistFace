@@ -5,7 +5,7 @@ Before use this project, you should include VisionModelLib to classpath first. I
 ----
   
 __Demo__  
-![demo_delaunay](https://github.com/htkseason/TwistFace/bolb/master/demo_delaunay.jpg)    
-![demo](https://github.com/htkseason/TwistFace/bolb/master/demo.png)  
+![demo_delaunay](https://github.com/htkseason/TwistFace/blob/master/demo_delaunay.jpg)    
+![demo](https://github.com/htkseason/TwistFace/blob/master/demo.jpg)  
   
 In order to twist other objects, modify 'MuctData.java'.
