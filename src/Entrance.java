@@ -11,6 +11,7 @@ import org.opencv.imgproc.Imgproc;
 
 import pers.season.vml.statistics.shape.ShapeInstance;
 import pers.season.vml.statistics.shape.ShapeModel;
+import pers.season.vml.statistics.shape.ShapeModelTrain;
 import pers.season.vml.statistics.texture.TextureModel;
 import pers.season.vml.util.ImUtils;
 import pers.season.vml.util.MuctData;
@@ -21,11 +22,14 @@ public class Entrance {
 	}
 
 	public final static void main(String[] args) {
+		
+		// train and init Shape-Model
 		MuctData.init("muct/jpg", "muct/muct76-opencv.csv", false);
+		ShapeModelTrain.train("models/shape/", 0.90, false);
 		ShapeModel.init("models/shape/", "V", "Z_e");
-		TextureModel.init("models/texture/", "U", "X_mean", "Z_e", "meanShape", "delaunay");
 
-		// create Surrounding anchor points
+
+		// create surrounding anchor points and Delaunay
 		int testImg = 1;
 		Mat srcpic = MuctData.getGrayJpg(testImg);
 		Mat srcpts = MuctData.getPtsMat(testImg);
@@ -37,6 +41,7 @@ public class Entrance {
 		}
 		MinMaxLocResult xmm = Core.minMaxLoc(srcptsX);
 		MinMaxLocResult ymm = Core.minMaxLoc(srcptsY);
+		
 		double effectArea = 0.5;
 		double xgap = (xmm.maxVal - xmm.minVal) * effectArea;
 		double ygap = (ymm.maxVal - ymm.minVal) * effectArea;
@@ -45,27 +50,27 @@ public class Entrance {
 		ymm.minVal = ymm.minVal - ygap < 0 ? 0 : ymm.minVal - ygap;
 		ymm.maxVal = ymm.maxVal + ygap > srcpic.height() ? srcpic.height() : ymm.maxVal + ygap;
 		Mat adiPts = new Mat();
-		int triDensity = 3;
-		for (int y = 0; y <= triDensity; y++) {
-			for (int x = 0; x <= triDensity; x++) {
-				if (x == 0 || y == 0 || x == triDensity || y == triDensity) {
+		int warpDensity = 3;
+		for (int y = 0; y <= warpDensity; y++) {
+			for (int x = 0; x <= warpDensity; x++) {
+				if (x == 0 || y == 0 || x == warpDensity || y == warpDensity) {
 					Mat t = new Mat(2, 1, CvType.CV_64F);
-					t.put(0, 0, xmm.minVal + (xmm.maxVal - xmm.minVal) * ((double) x / triDensity),
-							ymm.minVal + (ymm.maxVal - ymm.minVal) * ((double) y / triDensity));
+					t.put(0, 0, xmm.minVal + (xmm.maxVal - xmm.minVal) * ((double) x / warpDensity),
+							ymm.minVal + (ymm.maxVal - ymm.minVal) * ((double) y / warpDensity));
 					adiPts.push_back(t);
 				}
 			}
 		}
-		
 		srcpts.push_back(adiPts);
-
+		JFrame winDelaunay = new JFrame();
+		int[][] delaunay = TextureModel.createDelaunay(new Rect(0, 0, srcpic.width() + 1, srcpic.height() + 1), srcpts);
+		ImUtils.showDelaunay(winDelaunay, srcpts, delaunay, srcpic.width(), srcpic.height());
+		
+		
 		// twist according to shape model
 		double stepVar = 1.5e-2;
 		ShapeInstance shape = new ShapeInstance(MuctData.getPtsMat(testImg));
-		int[][] delaunay = TextureModel.createDelaunay(new Rect(0, 0, srcpic.width() + 1, srcpic.height() + 1), srcpts);
 		JFrame win = new JFrame();
-		JFrame winDelaunay = new JFrame();
-		ImUtils.showDelaunay(winDelaunay, srcpts, delaunay, srcpic.width(), srcpic.height());
 		for (int feature = 0; feature < ShapeModel.Z_SIZE; feature++) {
 			win.setTitle("Feature = " + feature);
 			double[] seq = new double[] { 0, 3, -3, 0 };
@@ -79,8 +84,7 @@ public class Entrance {
 					Mat dstpic = srcpic.clone();
 
 					TextureModel.AfflineTexture(srcpic, srcpts, dstpic, dstpts, delaunay);
-					// ImUtils.showDelaunay(winDelaunay, dstpts, delaunay,
-					// dstpic.width(), dstpic.height());
+					// ImUtils.showDelaunay(winDelaunay, dstpts, delaunay, dstpic.width(), dstpic.height());
 					ImUtils.imshow(win, dstpic, 1);
 					System.gc();
 
