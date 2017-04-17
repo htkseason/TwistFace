@@ -1,6 +1,6 @@
 # TwistFace  
-Use Vision-Model-Lib to twist a landmarked-face which can be used to __expand training samples__.  
-Before use this project, you should __include VisionModelLib to classpath first__. It can be found in my repositories.  
+Using Vision-Model-Lib to twist a landmarked-face which can be used to __expand training samples__.  
+Before using this project, you should __include VisionModelLib to classpath first__. It can be found in my repositories.  
 The transformation including __scaling, rotation and non-rigid transformation__.   
 
 ----  
