@@ -24,9 +24,9 @@ public class Entrance {
 	public final static void main(String[] args) {
 		
 		// train and init Shape-Model
-		MuctData.init("muct/jpg", "muct/muct76-opencv.csv", false);
+		MuctData.init("muct/jpg", "muct/muct76-opencv.csv", new int[]{});
 		ShapeModelTrain.train("models/shape/", 0.90, false);
-		ShapeModel.init("models/shape/", "V", "Z_e");
+		ShapeModel sm = ShapeModel.load("models/shape/", "V", "Z_e");
 
 
 		// create surrounding anchor points and Delaunay
@@ -54,7 +54,7 @@ public class Entrance {
 		for (int y = 0; y <= warpDensity; y++) {
 			for (int x = 0; x <= warpDensity; x++) {
 				if (x == 0 || y == 0 || x == warpDensity || y == warpDensity) {
-					Mat t = new Mat(2, 1, CvType.CV_64F);
+					Mat t = new Mat(2, 1, CvType.CV_32F);
 					t.put(0, 0, xmm.minVal + (xmm.maxVal - xmm.minVal) * ((double) x / warpDensity),
 							ymm.minVal + (ymm.maxVal - ymm.minVal) * ((double) y / warpDensity));
 					adiPts.push_back(t);
@@ -69,16 +69,17 @@ public class Entrance {
 		
 		// twist according to shape model
 		double stepVar = 1.5e-2;
-		ShapeInstance shape = new ShapeInstance(MuctData.getPtsMat(testImg));
+		ShapeInstance shape = new ShapeInstance(sm);
+		shape.setFromPts(MuctData.getPtsMat(testImg));
 		JFrame win = new JFrame();
-		for (int feature = 0; feature < ShapeModel.Z_SIZE; feature++) {
+		for (int feature = 0; feature < sm.Z_SIZE; feature++) {
 			win.setTitle("Feature = " + feature);
 			double[] seq = new double[] { 0, 3, -3, 0 };
 			for (int s = 0; s < seq.length - 1; s++) {
 				for (double i = seq[s]; Math.abs(i - seq[s + 1]) > 0.001; i += 0.5 * Math.signum(seq[s + 1] - seq[s])) {
 					Mat z = shape.Z.clone();
 					z.put(feature, 0, z.get(feature, 0)[0] + stepVar * i * shape.getScale());
-					Mat dstpts = ShapeModel.getXfromZ(z);
+					Mat dstpts = sm.getXfromZ(z);
 					dstpts.push_back(adiPts);
 
 					Mat dstpic = srcpic.clone();
