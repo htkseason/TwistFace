@@ -84,7 +84,7 @@ public class Entrance {
 
 					Mat dstpic = srcpic.clone();
 
-					TextureModel.AfflineTexture(srcpic, srcpts, dstpic, dstpts, delaunay);
+					TextureModel.AffineTexture(srcpic, srcpts, dstpic, dstpts, delaunay);
 					// ImUtils.showDelaunay(winDelaunay, dstpts, delaunay, dstpic.width(), dstpic.height());
 					ImUtils.imshow(win, dstpic, 1);
 					System.gc();
