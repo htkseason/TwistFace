@@ -12,6 +12,6 @@ Step 3 -- Twist the object as adjusting each parameter of __Shape-Model__
   
 __Demo__  
 ![demo_delaunay](https://github.com/htkseason/TwistFace/blob/master/demos/demo1.jpg)    
-![demo](https://github.com/htkseason/TwistFace/blob/master/demos/demo2.jpg)  
+![demo](https://github.com/htkseason/TwistFace/blob/master/demos/demo2.png)  
   
 In order to twist other objects, modify 'MuctData.java'.
