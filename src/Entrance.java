@@ -66,7 +66,7 @@ public class Entrance {
 		int[][] delaunay = TextureModel.createDelaunay(new Rect(0, 0, srcpic.width() + 1, srcpic.height() + 1), srcpts);
 		ImUtils.showDelaunay(winDelaunay, srcpts, delaunay, srcpic.width(), srcpic.height());
 		
-		
+
 		// twist according to shape model
 		double stepVar = 1.5e-2;
 		ShapeInstance shape = new ShapeInstance(sm);

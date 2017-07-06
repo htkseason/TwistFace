@@ -11,7 +11,7 @@ Step 2 -- Create __Delaunay Triangulation__  and warp it with a rectangle (effec
 Step 3 -- Twist the object as adjusting each parameter of __Shape-Model__  
   
 __Demo__  
-![demo_delaunay](https://github.com/htkseason/TwistFace/blob/master/demo_delaunay.jpg)    
-![demo](https://github.com/htkseason/TwistFace/blob/master/demo.jpg)  
+![demo_delaunay](https://github.com/htkseason/TwistFace/blob/master/demos/demo1.jpg)    
+![demo](https://github.com/htkseason/TwistFace/blob/master/demos/demo2.jpg)  
   
 In order to twist other objects, modify 'MuctData.java'.
